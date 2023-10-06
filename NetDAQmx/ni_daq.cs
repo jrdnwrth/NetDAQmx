@@ -67,7 +67,7 @@ public class Daq
             status = Dll_Wrapper.DAQmxReadDigitalLines(task.handle, 1, 10.0, false, data, (uint)data.Count(), out samples_per_channel_read, out bytes_per_channel, IntPtr.Zero);
             throw_error(status);
 
-            return data.ToList().Any();
+            return data[0] == 1;
         }
     }
 
