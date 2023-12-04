@@ -151,7 +151,11 @@ public static class DllWrapper
     }
 
     [DllImport(DllPath, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-    internal static extern int DAQmxReadDigitalLines(IntPtr taskHandle, int numSampsPerChan, double timeout, DAQmxDataLayout fillMode, byte[] readArray, UInt32 arraySizeInBytes, out int sampsPerChanRead, out int numBytesPerSamp, IntPtr reserved);
+    private static extern int DAQmxReadDigitalLines(IntPtr taskHandle, int numSampsPerChan, double timeout, DAQmxDataLayout fillMode, byte[] readArray, uint arraySizeInBytes, out int sampsPerChanRead, out int numBytesPerSamp, IntPtr reserved);
+    internal static int DAQmxReadDigitalLines(IntPtr taskHandle, int numSampsPerChan, double timeout, DAQmxDataLayout fillMode, byte[] readArray, uint arraySizeInBytes, out int sampsPerChanRead, out int numBytesPerSamp)
+    {
+        return DAQmxReadDigitalLines(taskHandle, numSampsPerChan, timeout, fillMode, readArray, arraySizeInBytes, out sampsPerChanRead, out numBytesPerSamp, IntPtr.Zero);
+    }
 
     [DllImport(DllPath, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
     private static extern int DAQmxReadAnalogScalarF64(

@@ -90,13 +90,13 @@ public class NIDAQ
     /// <summary>
     /// Creates a task and writes a single line of a DO port
     /// </summary>
-    /// <param name="device_alias">The device name. E.g. - "Dev1"</param>
+    /// <param name="deviceAlias">The device name. E.g. - "Dev1"</param>
     /// <param name="port">The port number</param>
     /// <param name="channel">The channel number</param>
-    /// <param name="close">True to close the line, o/w open</param>
-    public static void WriteDOSingleLine(string device_alias, byte port, uint channel, bool close)
+    /// <param name="close"><see langword="true"/> to close the line, o/w open</param>
+    public static void WriteDOSingleLine(string deviceAlias, byte port, uint channel, bool close)
     {
-        string identifier = $"{device_alias}/port{port}/line{channel}";
+        string identifier = $"{deviceAlias}/port{port}/line{channel}";
 
         using var task = new DaqTask();
         var status = DllWrapper.DAQmxCreateDOChan(task.handle, identifier, "", DAQmxLineGrouping.ChanPerLine);
@@ -105,6 +105,40 @@ public class NIDAQ
         byte[] data = new byte[] { close ? (byte)0 : (byte)1 };
         status = DllWrapper.DAQmxWriteDigitalLines(task.handle, 1, true, 10.0, DAQmxDataLayout.GroupByChannel, data, out int written, IntPtr.Zero);
         ThrowError(status);
+    }
+
+    /// <summary>
+    /// Reads a single line from the given port and channel
+    /// </summary>
+    /// <param name="port">The port you want to read from</param>
+    /// <param name="channel">The channel/line you want to read from</param>
+    /// <returns><see langword="true"/> if the line is open. <see langword="false"/> otherwise</returns>
+    public bool IsLineOpen(byte port, uint channel)
+    {
+        return IsLineOpen(DeviceAlias, port, channel);
+    }
+
+    /// <summary>
+    /// Reads a single line from the given port and channel
+    /// </summary>
+    /// <param name="deviceAlias">The devices name in the system</param>
+    /// <param name="port">The port you want to read from</param>
+    /// <param name="channel">The channel/line you want to read from</param>
+    /// <returns><see langword="true"/> if the line is open. <see langword="false"/> otherwise</returns>
+    public static bool IsLineOpen(string deviceAlias, byte port, uint channel)
+    {
+        string identifier = $"{deviceAlias}/port{port}/line{channel}";
+
+        using var task = new DaqTask();
+        var status = DllWrapper.DAQmxCreateDOChan(task.handle, identifier, "", 0);
+        ThrowError(status);
+
+        byte[] data = new byte[8];
+
+        status = DAQmxReadDigitalLines(task.handle, 1, 10.0, DAQmxDataLayout.GroupByChannel, data, (uint)data.Length, out int samples_per_channel_read, out int bytes_per_channel);
+        ThrowError(status);
+
+        return data[0] == 1;
     }
 
     /// <summary>

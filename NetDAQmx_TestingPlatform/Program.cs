@@ -21,28 +21,13 @@ internal class Program
         bool close = false;             // Set this to false to open the relay.
         NIDAQ daq = new(connectedDevices[0]); // Use NI-MAX to assign this name.
 
-        SetMasterAddLatch(5, daq.DeviceAlias);
-        //daq.WritePort(1, 0b0101);
+        // Open or close the relay.
+        daq.WriteDOChannel(0, relay, close);
+        
+        // Read whether it is open or closed.
+        bool is_closed = daq.IsLineOpen(0, relay);
 
-        //// Open or close the relay.
-        //daq.WriteDOChannel(0, relay, close);
-    }
-
-    private static void SetMasterAddLatch(byte data, string deviceName)
-    {
-        if (data > 7)
-        {
-            throw new ArgumentOutOfRangeException(nameof(data), "Maximum is 7");
-        }
-
-        using DaqTask masterAddLatchTask = new();
-        NIDAQ.DAQmxCreateDOChan(masterAddLatchTask, $"{deviceName}/port1/line3", DllWrapper.DAQmxLineGrouping.ChanPerLine);
-        NIDAQ.WriteDOSingleLine(deviceName, 1, 3, false); // setting p1.3 to ON
-
-        using DaqTask writeData = new();
-        NIDAQ.DAQmxCreateDOChan(writeData, $"{deviceName}/port0", DllWrapper.DAQmxLineGrouping.ChanForAllLines);
-        NIDAQ.DAQmxWriteDigitalU8(writeData, 1, true, 1, DllWrapper.DAQmxDataLayout.GroupByChannel, new[] { data }, out int samplesWritten);
-
-        NIDAQ.WriteDOSingleLine(deviceName, 1, 3, true); // setting p1.3 to OFF
+        // Print the results.
+        Console.WriteLine(is_closed ? "Closed" : "Open");
     }
 }
