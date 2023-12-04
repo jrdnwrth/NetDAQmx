@@ -1,11 +1,6 @@
 ﻿using NetDAQmx.Helpers;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Threading;
-using System.Threading.Channels;
 using static NetDAQmx.DllWrapper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NetDAQmx;
 
