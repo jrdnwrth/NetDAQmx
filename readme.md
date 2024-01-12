@@ -2,7 +2,7 @@
 
 The NetDAQmx repository has moved!  It now lives here:
 
-[https://github.com/BenMendel/NetDAQmx] (https://github.com/BenMendel/NetDAQmx)
+https://github.com/BenMendel/NetDAQmx
 
 # NetDAQmx
 
