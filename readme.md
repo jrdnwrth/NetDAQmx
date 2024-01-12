@@ -1,3 +1,9 @@
+# UPDATE!
+
+The NetDAQmx repository has moved!  It now lives here:
+
+[https://github.com/BenMendel/NetDAQmx] (https://github.com/BenMendel/NetDAQmx)
+
 # NetDAQmx
 
 This project provides a minimalistic C# wrapper around the NI-DAQmx driver.
